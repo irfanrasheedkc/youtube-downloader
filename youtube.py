@@ -1,37 +1,50 @@
+'''Need to add showing thumbnail of youtube video..........'''
 from tkinter import *
 from pytube import YouTube
 from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
+from PIL import ImageTk
+from urllib.request import urlopen
 
 #Download function
 def show():
-    link = "https://www.youtube.com/watch?v=a3ICNMQW7Ok"
+    link = entry1.get()
+    #try:
+    global yt
     yt = YouTube(link)
     print(yt.title)
     # For getting thumbnail
-    yt.thumbnail_url
-    # yt.streams.filter(file_extension='mp4')
-    stream_list=list=yt.streams.filter(file_extension='mp4', progressive="True"))
-    
+    image_url=yt.thumbnail_url
+    data = urlopen(image_url)
+    image = ImageTk.PhotoImage(data=data.read())
+    Label(root, image=image).pack()
+    stream_list=yt.streams.filter(file_extension='mp4', progressive="True")
+
     for st in stream_list:
         new_line(st)
         print(st.resolution)
         print(st.itag)
-    # stream = yt.streams.get_by_itag(st.itag)
-    # stream.download()
-    save()
 
+    save()
+#except:
+print("Connection error...")
 #New Line
 #Stream is passed.Here we need to make a button showing the resolution. Onclicking calling download function with the
 #corresponding itag value
 def new_line(stream):
-    pass
+    but_res = Button(frame3, text=stream.resolution, command=lambda:download(stream.itag))
+    but_res.pack()
+
 
 #Save button function
 def save():
     pass
-
+#Download video
+def download(itag):
+    print("Downloading video with itag = ",itag)
+    stream = yt.streams.get_by_itag(itag)
+    stream.download()
 #Tkinter window
 root=Tk()
 root.title('Youtube downloader')
@@ -74,8 +87,13 @@ label1.grid(row=0,column=0)
 entry1 = Entry(frame2,width=60)
 entry1.grid(row=0,column=1)
 
+
 #Download button
 but_download = Button(frame, text="Show", command=show)
 but_download.pack(pady=1)
+
+#Resolution and itag
+frame3= Frame(frame,background='white')
+frame3.pack(fill= BOTH, padx= 10, pady=0)
 
 root.mainloop()
