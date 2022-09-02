@@ -10,16 +10,21 @@ from urllib.request import urlopen
 #Download function
 def show():
     link = entry1.get()
-    #try:
-    global yt
-    yt = YouTube(link)
-    print(yt.title)
-    # For getting thumbnail
-    image_url=yt.thumbnail_url
-    data = urlopen(image_url)
-    image = ImageTk.PhotoImage(data=data.read())
-    Label(root, image=image).pack()
-    stream_list=yt.streams.filter(file_extension='mp4', progressive="True")
+    try:
+        global yt
+        yt = YouTube(link)
+        print(yt.title)
+        label2 = Label(
+            frame3,
+            font="Roboto 12 bold",
+            foreground="black",
+            background="white",
+            text=yt.title)
+        label2.pack()
+        thumbnail(yt.thumbnail_url)
+        stream_list=yt.streams.filter(file_extension='mp4', progressive="True")
+    except:
+        print("Connection error...")
 
     for st in stream_list:
         new_line(st)
@@ -27,11 +32,19 @@ def show():
         print(st.itag)
 
     save()
-#except:
-print("Connection error...")
-#New Line
-#Stream is passed.Here we need to make a button showing the resolution. Onclicking calling download function with the
-#corresponding itag value
+
+#Showing thumbnail
+def thumbnail(url):
+    u = urlopen(url)
+    raw_data = u.read()
+    u.close()
+
+    photo = ImageTk.PhotoImage(data=raw_data)
+    label_thumbnail = Label(image=photo)
+    label_thumbnail.image = photo
+    label_thumbnail.pack()
+
+#Show resolution on button
 def new_line(stream):
     but_res = Button(frame3, text=stream.resolution, command=lambda:download(stream.itag))
     but_res.pack()
