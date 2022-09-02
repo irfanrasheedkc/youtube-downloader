@@ -7,7 +7,7 @@ from tkinter import ttk
 from PIL import ImageTk
 from urllib.request import urlopen
 
-#Download function
+#Show function
 def show():
     link = entry1.get()
     try:
@@ -22,19 +22,48 @@ def show():
             text=yt.title)
         label2.pack()
         thumbnail(yt.thumbnail_url)
+        messagebox.showinfo("Succes", "Connected succesfully")
+    except:
+        messagebox.showinfo("Error", "Connection error!!!")
+        exit()
+    but_download_video.grid(row = 0 , column= 0)
+    but_download_audio.grid(row = 0 , column= 1)
+
+#Video function
+def show_video():
+    try:
         stream_list=yt.streams.filter(file_extension='mp4', progressive="True")
     except:
-        print("Connection error...")
+        print("Connection error!!")
+    label_vid = Label(
+        frame3,
+        font="Roboto",
+        background="white",
+        text="Video : ")
+    label_vid.pack()
+    for st in stream_list:
+        show_res(st)
+
+#Audio function
+def show_audio():
+    try:
+        stream_list=yt.streams.filter(only_audio=True , subtype='mp4')
+    except:
+        print("Connection error!!")
+
+    label_aud = Label(
+        frame3,
+        font="Roboto",
+        background="white",
+        text="Audio only : ")
+    label_aud.pack()
 
     for st in stream_list:
-        new_line(st)
-        print(st.resolution)
-        print(st.itag)
-
-    save()
+        show_abr(st)
 
 #Showing thumbnail
 def thumbnail(url):
+
     u = urlopen(url)
     raw_data = u.read()
     u.close()
@@ -44,20 +73,30 @@ def thumbnail(url):
     label_thumbnail.image = photo
     label_thumbnail.pack()
 
+#Show abr on button
+def show_abr(stream):
+    itag = stream.itag
+    print(type(itag))
+    if(itag==139):
+        itag = "48kbps"
+    if (itag == 140):
+        itag = "128kbps"
+    if (itag == 141):
+        itag = "256kbps"
+    but_abr = Button(frame3, text=itag, command=lambda:download(stream.itag))
+    but_abr.pack()
+
 #Show resolution on button
-def new_line(stream):
+def show_res(stream):
     but_res = Button(frame3, text=stream.resolution, command=lambda:download(stream.itag))
     but_res.pack()
 
-
-#Save button function
-def save():
-    pass
 #Download video
 def download(itag):
     print("Downloading video with itag = ",itag)
     stream = yt.streams.get_by_itag(itag)
     stream.download()
+
 #Tkinter window
 root=Tk()
 root.title('Youtube downloader')
@@ -101,9 +140,19 @@ entry1 = Entry(frame2,width=60)
 entry1.grid(row=0,column=1)
 
 
-#Download button
+#Show button
 but_download = Button(frame, text="Show", command=show)
 but_download.pack(pady=1)
+
+#Audio and video frame
+frame4= Frame(frame,background='white')
+frame4.pack(fill= BOTH, padx= 240, pady=0)
+
+#Video button
+but_download_video = Button(frame4, text="Video", command=show_video)
+
+#Audio button
+but_download_audio = Button(frame4, text="Audio", command=show_audio)
 
 #Resolution and itag
 frame3= Frame(frame,background='white')
