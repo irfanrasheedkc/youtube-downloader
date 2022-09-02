@@ -6,9 +6,13 @@ from tkinter import messagebox
 from tkinter import ttk
 from PIL import ImageTk
 from urllib.request import urlopen
+import os
+
+global yt
 
 #Show function
 def show():
+    global entry_rename
     link = entry1.get()
     try:
         global yt
@@ -22,12 +26,24 @@ def show():
             text=yt.title)
         label2.pack()
         thumbnail(yt.thumbnail_url)
-        messagebox.showinfo("Succes", "Connected succesfully")
     except:
         messagebox.showinfo("Error", "Connection error!!!")
         exit()
     but_download_video.grid(row = 0 , column= 0)
     but_download_audio.grid(row = 0 , column= 1)
+
+    #Rename file
+    frame5.pack(fill=BOTH, padx=10, pady=0)
+    label_rename = Label(
+        frame5,
+        font=("Arial", 12),
+        background="white",
+        text="Name of the file : ")
+    label_rename.grid(row = 0 , column = 0)
+
+    entry_rename = Entry(frame5 , width = 55 )
+    entry_rename.insert(0, yt.title)
+    entry_rename.grid(row = 0 , column = 1)
 
 #Video function
 def show_video():
@@ -83,19 +99,24 @@ def show_abr(stream):
         itag = "128kbps"
     if (itag == 141):
         itag = "256kbps"
-    but_abr = Button(frame3, text=itag, command=lambda:download(stream.itag))
+    but_abr = Button(frame3, text=itag, command=lambda:download(stream.itag,'.mp3'))
     but_abr.pack()
 
 #Show resolution on button
 def show_res(stream):
-    but_res = Button(frame3, text=stream.resolution, command=lambda:download(stream.itag))
+    but_res = Button(frame3, text=stream.resolution, command=lambda:download(stream.itag, '.mp4'))
     but_res.pack()
 
 #Download video
-def download(itag):
+def download(itag,ext):
+    global entry_rename
     print("Downloading video with itag = ",itag)
     stream = yt.streams.get_by_itag(itag)
-    stream.download()
+    downloaded_file = stream.download()
+    base = entry_rename.get()
+    new_file = base + ext
+    os.rename(downloaded_file, new_file)
+    messagebox.showinfo("Succes", "Download completed succesfully")
 
 #Tkinter window
 root=Tk()
@@ -153,6 +174,10 @@ but_download_video = Button(frame4, text="Video", command=show_video)
 
 #Audio button
 but_download_audio = Button(frame4, text="Audio", command=show_audio)
+
+#Rename file
+frame5= Frame(frame,background='white')
+
 
 #Resolution and itag
 frame3= Frame(frame,background='white')
