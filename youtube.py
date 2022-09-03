@@ -1,4 +1,4 @@
-'''Need to add showing thumbnail of youtube video..........'''
+'''Need to include option for playlist downloading'''
 from tkinter import *
 from pytube import YouTube
 from tkinter import filedialog
@@ -12,6 +12,7 @@ global yt
 
 #Show function
 def show():
+    global link
     global entry_rename
     link = entry1.get()
     try:
@@ -59,6 +60,10 @@ def show_video():
     label_vid.pack()
     for st in stream_list:
         show_res(st)
+
+#Creating button for 1080p
+    but_1080 = Button(frame3, text="1080p", command=lambda: download_1080p())
+    but_1080.pack()
 
 #Audio function
 def show_audio():
@@ -117,6 +122,43 @@ def download(itag,ext):
     new_file = base + ext
     os.rename(downloaded_file, new_file)
     messagebox.showinfo("Succes", "Download completed succesfully")
+
+#Download 1080p
+def download_1080p():
+  global link
+  try:
+      yt = YouTube(link)
+      try:
+        vid = yt.streams.filter(res="1080p").first().download()
+      except:
+        messagebox.showinfo("Not Available", "1080p not available for this video...")
+      vid = vid.first().download()
+      os.rename(vid, 'video_file.mp4')
+
+      aud = yt.streams.filter(only_audio=True).first().download()
+      os.rename(aud, 'audio_file.mp4')
+
+
+      video_clip = VideoFileClip('video_file.mp4')
+      audio_clip = AudioFileClip('audio_file.mp4')
+
+      videoclip = video_clip.set_audio(audio_clip)
+
+      videoclip.write_videofile(entry_rename.get()+'mp4')
+
+      file_path = 'video_file.mp4'
+      if os.path.isfile(file_path):
+        os.remove(file_path)
+        print("File has been deleted")
+
+      file_path = 'audio_file.mp4'
+      if os.path.isfile(file_path):
+        os.remove(file_path)
+        print("File has been deleted")
+
+  except:
+      print("Error")
+
 
 #Tkinter window
 root=Tk()
