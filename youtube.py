@@ -162,7 +162,7 @@ def download_1080p():
 
 #Tkinter window
 root=Tk()
-root.title('Youtube downloader')
+root.title('Video downloader')
 root.geometry(f'600x600')
 root.resizable(False,False)
 
@@ -182,10 +182,10 @@ frame1= Frame(frame, background='white')
 frame1.pack( padx= 10, pady=10)
 label = Label(
     frame1,
-    font = "Roboto 35 bold",
+    font = "Roboto 32 bold",
     foreground = "red",
     background = "white",
-    text = "Yotube downloader")
+    text = "Yotube video downloader")
 label.pack(padx=10,pady=0)
 
 
