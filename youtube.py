@@ -1,4 +1,5 @@
-'''Need to include option for playlist downloading'''
+'''Issue on downloading 1080p video'''
+
 from tkinter import *
 from pytube import YouTube
 from tkinter import filedialog
@@ -7,6 +8,7 @@ from tkinter import ttk
 from PIL import ImageTk
 from urllib.request import urlopen
 import os
+from moviepy.editor import  *
 
 global yt
 
@@ -126,38 +128,38 @@ def download(itag,ext):
 #Download 1080p
 def download_1080p():
   global link
+  # try:
+  yt = YouTube(link)
   try:
-      yt = YouTube(link)
-      try:
-        vid = yt.streams.filter(res="1080p").first().download()
-      except:
-        messagebox.showinfo("Not Available", "1080p not available for this video...")
-      vid = vid.first().download()
-      os.rename(vid, 'video_file.mp4')
-
-      aud = yt.streams.filter(only_audio=True).first().download()
-      os.rename(aud, 'audio_file.mp4')
-
-
-      video_clip = VideoFileClip('video_file.mp4')
-      audio_clip = AudioFileClip('audio_file.mp4')
-
-      videoclip = video_clip.set_audio(audio_clip)
-
-      videoclip.write_videofile(entry_rename.get()+'mp4')
-
-      file_path = 'video_file.mp4'
-      if os.path.isfile(file_path):
-        os.remove(file_path)
-        print("File has been deleted")
-
-      file_path = 'audio_file.mp4'
-      if os.path.isfile(file_path):
-        os.remove(file_path)
-        print("File has been deleted")
-
+    vid = yt.streams.filter(res="1080p").first().download()
   except:
-      print("Error")
+    messagebox.showinfo("Not Available", "1080p not available for this video...")
+  os.rename(vid , 'video_file.mp4')
+
+  aud = yt.streams.filter(only_audio=True).first().download()
+  os.rename(aud, 'audio_file.mp4')
+
+
+  video_clip = VideoFileClip('video_file.mp4')
+  audio_clip = AudioFileClip('audio_file.mp4')
+
+  videoclip = video_clip.set_audio(audio_clip)
+
+  videoclip.write_videofile(entry_rename.get()+'mp4' ,  fps=24, threads=1, codec="libx264")
+
+  file_path = 'video_file.mp4'
+  if os.path.isfile(file_path):
+    os.remove(file_path)
+    print("File has been deleted")
+
+  file_path = 'audio_file.mp4'
+  if os.path.isfile(file_path):
+    os.remove(file_path)
+    print("File has been deleted")
+
+  # except Exception as e:
+  #     print(e)
+  #     print("Error")
 
 
 #Tkinter window
