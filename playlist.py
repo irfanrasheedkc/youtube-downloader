@@ -5,7 +5,6 @@ from pytube import Playlist
 from pytube import YouTube
 import os
 from tkinter import messagebox
-from multiprocessing import Process
 
 def show():
     global pl
@@ -50,10 +49,6 @@ def download_all_audio():
         i = i + 1
     messagebox.showinfo("Succes", "Download completed succesfully")
 
-def new_process():
-    p = Process(target=download_all_audio())
-    p.start()
-    p.join()
 
 #Tkinter window
 root=Tk()
@@ -110,7 +105,7 @@ frame4.pack(fill= BOTH, padx= 240, pady=0)
 but_download_video = Button(frame4, text="Save All Video", command=download_all_video)
 
 #Audio button
-but_download_audio = Button(frame4, text="Save All Audio", command=new_process)
+but_download_audio = Button(frame4, text="Save All Audio", command=download_all_audio)
 
 #Video names
 frame3= Frame(frame, background='white')
