@@ -5,8 +5,12 @@ from pytube import Playlist
 from pytube import YouTube
 import os
 from tkinter import messagebox
+from tkinter import ttk
 
 def show():
+    pb1.pack()
+    pb1.start()
+    root.update()
     global pl
     v.pack(side=RIGHT, fill='y')
     h.pack(side=BOTTOM, fill='x')
@@ -14,7 +18,10 @@ def show():
     i = 1
     link = entry1.get()
     pl = Playlist(link)
+    length=len(pl)
     for video in pl:
+        root.update()
+        pb1['value'] = (float(i)/length)*100
         yt = YouTube(video)
         vid_text = "\n" + str(i) + ".  " + yt.title+ "\n"
         text.insert(END, vid_text)
@@ -24,12 +31,21 @@ def show():
         # label_vid.config(text=vid_text)
     but_download_video.grid(row=0, column=0)
     but_download_audio.grid(row=1, column=0)
+    pb1.stop()
+    pb1.forget()
 
 '''Download all videos ....shows if a download is completed'''
 def download_all_video():
+    global root
+    pb1.pack()
+    pb1.start()
+    root.update()
     global pl
     i = 1
+    length = len(pl)
     for video in pl:
+        root.update()
+        pb1['value'] = (float(i) / length) * 100
         yt = YouTube(video)
         yt.streams.get_highest_resolution().download()
         print("completed file : "+str(i))
@@ -37,9 +53,17 @@ def download_all_video():
     messagebox.showinfo("Succes", "Download completed succesfully")
 
 def download_all_audio():
+    global root
+    pb1.pack()
+    pb1.start()
+    root.update()
+    root.update()
     global entry_rename
     i = 1
+    length = len(pl)
     for video in pl:
+        root.update()
+        pb1['value'] = (float(i) / length) * 100
         yt = YouTube(video)
         df= yt.streams.filter(only_audio=True)
         downloaded_file = df[0].download("./downloads")
@@ -97,6 +121,14 @@ entry1.grid(row=0,column=1)
 but_download = Button(frame, text="Show", command=show)
 but_download.pack(pady=1)
 
+#Progressbar for show button
+pb1 = ttk.Progressbar(
+    frame,
+    orient='horizontal',
+    mode='determinate',
+    length=280
+)
+
 #Audio and video frame
 frame4 = Frame(frame,background='white')
 frame4.pack(fill= BOTH, padx= 240, pady=0)
@@ -107,8 +139,14 @@ but_download_video = Button(frame4, text="Save All Video", command=download_all_
 #Audio button
 but_download_audio = Button(frame4, text="Save All Audio", command=download_all_audio)
 
+#Frame for video names
+# Add a frame to set the size of the window
+frame5= Frame(root, relief= 'sunken')
+frame5.pack(fill= BOTH, expand= True, padx= 10, pady=0)
+frame5.configure(bg='white')
+
 #Video names
-frame3= Frame(frame, background='white')
+frame3= Frame(frame5, background='white')
 frame3.pack( padx= 10, pady=10)
 
 #Add a vertical scrollbar
