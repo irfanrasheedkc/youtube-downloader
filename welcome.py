@@ -7,6 +7,10 @@ def run_video():
     window.destroy()
     os.system('python youtube.py')
 
+def run_subtitle():
+    window.destroy()
+    os.system('python subtitle.py')
+
 def run_playlist():
     window.destroy()
     os.system('python playlist.py')
@@ -24,12 +28,16 @@ window.iconphoto(False, photo)
 
 
 #Create video button
-button_vid = Button(window, text = "Video" ,  bg="#eb4034" , fg="white", activebackground="white" ,activeforeground="red", bd=10 , height = 18 , width=82 , command=run_video )
+button_vid = Button(window, text = "Video" ,  bg="#eb4034" , fg="white", activebackground="white" ,activeforeground="red", bd=10 , height = 14 , width=82 , command=run_video )
 button_vid.grid(row=0 , column=0)
 
+#Create subtitle button
+button_vid = Button(window, text = "Subtitle" ,  bg="#eb4034" , fg="white", activebackground="white" ,activeforeground="red", bd=10 , height = 8 , width=82 , command=run_subtitle )
+button_vid.grid(row=1 , column=0)
+
 #Creating playlist button
-button_play = Button(window, text = "Playlist", bg="#eb4034" ,fg="white", activebackground="white" ,activeforeground="red", bd=10 , height = 18 , width=82 , command=run_playlist)
-button_play.grid(row = 1 , column = 0)
+button_play = Button(window, text = "Playlist", bg="#eb4034" ,fg="white", activebackground="white" ,activeforeground="red", bd=10 , height = 14 , width=82 , command=run_playlist)
+button_play.grid(row = 2 , column = 0)
 
 
 window.mainloop()

@@ -9,21 +9,27 @@ def show():
     # global link
     # global entry_rename
     link = entry1.get()
-    # try:
-    global yt
-    yt = YouTube(link)
-    print(yt.title)
-    print(yt.captions)
-    for c in yt.captions:
-        if "en" in c.code:
-            print(c)
-            break
-    caption = c
-    print(caption.generate_srt_captions())
-    #
-    # except:
-    #         messagebox.showinfo("Error", "Connection error!!!")
-    #         exit()
+    try:
+        global yt
+        yt = YouTube(link)
+        print(yt.title)
+        print(yt.captions)
+        for c in yt.captions:
+            if "en" in c.code:
+                print(c)
+                caption = c
+                break
+        print(caption.generate_srt_captions())
+        filename = str(yt.title.split()[0]) + '.srt'
+        print(filename)
+        file_object = open(filename, 'w')
+        # Append 'hello' at the end of file
+        file_object.write(caption.generate_srt_captions())
+        # Close the file
+        file_object.close()
+
+    except:
+            print("Some error..")
 
 
 #Tkinter window
