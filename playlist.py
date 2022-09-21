@@ -113,7 +113,11 @@ label1 = Label(
     text = "Paste link : ")
 label1.grid(row=0,column=0)
 
+link_text = ''
+if 'www.youtube.com/playlist' in pyperclip.paste():
+    link_text = pyperclip.paste()
 entry1 = Entry(frame2,width=60)
+entry1.insert(0,link_text)
 entry1.grid(row=0,column=1)
 
 
